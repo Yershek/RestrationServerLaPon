@@ -1,0 +1,40 @@
+@baseUrl = http://localhost:8080/api
+@token = YOUR_JWT_TOKEN_HERE
+
+# @name Create CitizenResidency
+POST {{baseUrl}}/citizen-residency/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "citizenId": 1,
+  "addressId": 1,
+  "addressType": "Permanent",
+  "startDate": "2020-01-01",
+  "endDate": null
+}
+
+### @name Get All CitizenResidencies
+GET {{baseUrl}}/citizen-residency/get-all
+Authorization: Bearer {{token}}
+
+### @name Get CitizenResidency by ID
+GET {{baseUrl}}/citizen-residency/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update CitizenResidency
+PUT {{baseUrl}}/citizen-residency/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "citizenId": 1,
+  "addressId": 1,
+  "addressType": "Temporary",
+  "startDate": "2020-01-01",
+  "endDate": "2025-01-01"
+}
+
+### @name Delete CitizenResidency
+DELETE {{baseUrl}}/citizen-residency/delete/1
+Authorization: Bearer {{token}}

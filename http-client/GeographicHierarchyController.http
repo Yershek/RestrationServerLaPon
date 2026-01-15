@@ -1,0 +1,48 @@
+@baseUrl = http://localhost:8080/api
+@token = YOUR_JWT_TOKEN_HERE
+
+# @name Create GeographicHierarchy (Country)
+POST {{baseUrl}}/geographic-hierarchy/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "parentId": null,
+  "nameRu": "Кыргызстан",
+  "level": "Country"
+}
+
+### @name Create GeographicHierarchy (City)
+POST {{baseUrl}}/geographic-hierarchy/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "parentId": 1,
+  "nameRu": "Бишкек",
+  "level": "City"
+}
+
+### @name Get All GeographicHierarchies
+GET {{baseUrl}}/geographic-hierarchy/get-all
+Authorization: Bearer {{token}}
+
+### @name Get GeographicHierarchy by ID
+GET {{baseUrl}}/geographic-hierarchy/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update GeographicHierarchy
+PUT {{baseUrl}}/geographic-hierarchy/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "parentId": null,
+  "nameRu": "Кыргызская Республика",
+  "level": "Country"
+}
+
+### @name Delete GeographicHierarchy
+DELETE {{baseUrl}}/geographic-hierarchy/delete/1
+Authorization: Bearer {{token}}
+

@@ -1,0 +1,39 @@
+@baseUrl = http://localhost:8080/api
+@token = eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MywidXNlcm5hbWUiOiIxMjM0NTY3ODkxMjM0NSIsInN1YiI6IjEyMzQ1Njc4OTEyMzQ1IiwiaWF0IjoxNzY1NDIyMzY3LCJleHAiOjE3NjU0MjI0Mjd9.vPuuviM6LHBBqdO6L2jEcqvlsgOTZzYSELx_VzzzVqE
+
+# @name Create DocumentChangesLog
+POST {{baseUrl}}/document-changes-log/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "documentId": 1,
+  "changeType": "Issued",
+  "agencyId": 1,
+  "reason": "Initial issuance of document"
+}
+
+### @name Get All DocumentChangesLogs
+GET {{baseUrl}}/document-changes-log/get-all
+Authorization: Bearer {{token}}
+
+### @name Get DocumentChangesLog by ID
+GET {{baseUrl}}/document-changes-log/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update DocumentChangesLog
+PUT {{baseUrl}}/document-changes-log/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "documentId": 1,
+  "changeType": "Updated",
+  "agencyId": 1,
+  "reason": "Address changed"
+}
+
+### @name Delete DocumentChangesLog
+DELETE {{baseUrl}}/document-changes-log/delete/1
+Authorization: Bearer {{token}}
+

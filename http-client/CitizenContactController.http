@@ -1,0 +1,38 @@
+@baseUrl = http://localhost:8080/api
+@token = YOUR_JWT_TOKEN_HERE
+
+# @name Create CitizenContact
+POST {{baseUrl}}/citizen-contacts/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "citizenId": 1,
+  "contactType": "Phone",
+  "contactValue": "+996777123456",
+  "isPrimary": true
+}
+
+### @name Get All CitizenContacts
+GET {{baseUrl}}/citizen-contacts/get-all
+Authorization: Bearer {{token}}
+
+### @name Get CitizenContact by ID
+GET {{baseUrl}}/citizen-contacts/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update CitizenContact
+PUT {{baseUrl}}/citizen-contacts/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "citizenId": 1,
+  "contactType": "Email",
+  "contactValue": "ivanov@example.com",
+  "isPrimary": true
+}
+
+### @name Delete CitizenContact
+DELETE {{baseUrl}}/citizen-contacts/delete/1
+Authorization: Bearer {{token}}

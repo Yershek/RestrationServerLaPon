@@ -1,0 +1,46 @@
+@baseUrl = http://localhost:8080/api
+@token = YOUR_JWT_TOKEN_HERE
+
+# @name Create Marriage
+POST {{baseUrl}}/marriages/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "husbandId": 1,
+  "wifeId": 2,
+  "maritalStatusId": 1,
+  "marriageDate": "2022-05-10",
+  "registrationAuthority": "ЗАГС",
+  "documentSeriesNumber": "MAR12345",
+  "isActive": true,
+  "divorceDate": null
+}
+
+### @name Get All Marriages
+GET {{baseUrl}}/marriages/get-all
+Authorization: Bearer {{token}}
+
+### @name Get Marriage by ID
+GET {{baseUrl}}/marriages/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update Marriage
+PUT {{baseUrl}}/marriages/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "husbandId": 1,
+  "wifeId": 2,
+  "maritalStatusId": 2,
+  "marriageDate": "2022-05-10",
+  "registrationAuthority": "ЗАГС",
+  "documentSeriesNumber": "MAR12345",
+  "isActive": false,
+  "divorceDate": "2024-01-15"
+}
+
+### @name Delete Marriage
+DELETE {{baseUrl}}/marriages/delete/1
+Authorization: Bearer {{token}}

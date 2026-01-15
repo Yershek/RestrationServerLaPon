@@ -1,0 +1,46 @@
+@baseUrl = http://localhost:8080/api
+@token = YOUR_JWT_TOKEN_HERE
+
+# @name Create Document
+POST {{baseUrl}}/documents/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "citizenId": 1,
+  "documentTypeId": 1,
+  "series": "AN",
+  "number": "1234567",
+  "issueDate": "2020-01-01",
+  "expiryDate": "2030-01-01",
+  "issuingAuthority": "МВД 1234",
+  "isActive": true
+}
+
+### @name Get All Documents
+GET {{baseUrl}}/documents/get-all
+Authorization: Bearer {{token}}
+
+### @name Get Document by ID
+GET {{baseUrl}}/documents/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update Document
+PUT {{baseUrl}}/documents/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "citizenId": 1,
+  "documentTypeId": 1,
+  "series": "AN",
+  "number": "7654321",
+  "issueDate": "2020-01-01",
+  "expiryDate": "2035-01-01",
+  "issuingAuthority": "МВД 5678",
+  "isActive": true
+}
+
+### @name Delete Document
+DELETE {{baseUrl}}/documents/delete/1
+Authorization: Bearer {{token}}

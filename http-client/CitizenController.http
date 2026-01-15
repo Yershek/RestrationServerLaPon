@@ -1,0 +1,45 @@
+@baseUrl = http://localhost:8080/api
+@token = eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MywidXNlcm5hbWUiOiIxMjM0NTY3ODkxMjM0NSIsInN1YiI6IjEyMzQ1Njc4OTEyMzQ1IiwiaWF0IjoxNzY1NDE5MjAyLCJleHAiOjE3NjU0MTkyNjJ9.uWi8rXgh9kiiLJvtI4BYL7_-QM7ZCV0Qd7cMF7MCgzc
+
+POST localhost:8080/api/citizens/create
+Content-Type: application/json
+
+{
+  "password": "Aziret0602",
+  "personalIdNumber": "12345678912345",
+  "lastName": "ЛАст",
+  "firstName": "Хрен",
+  "middleName": "Хренович",
+  "dateOfBirth": "1993-04-25",
+  "gender": "Male",
+  "placeOfBirth": "Бишкек",
+  "nationality": "Кыргыз"
+}
+
+### @name Get All Citizens
+GET {{baseUrl}}/citizens/get-all
+Authorization: Bearer {{token}}
+
+### @name Get Citizen by ID
+GET {{baseUrl}}/citizens/get-by/2
+Authorization: Bearer {{token}}
+
+### @name Update Citizen
+PUT {{baseUrl}}/citizens/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "personalIdNumber": "12345678901234",
+  "lastName": "Иванов",
+  "firstName": "Петр",
+  "middleName": "Иванович",
+  "dateOfBirth": "1990-01-01",
+  "gender": "Male",
+  "placeOfBirth": "Бишкек",
+  "nationality": "Кыргыз"
+}
+
+### @name Delete Citizen
+DELETE {{baseUrl}}/citizens/delete/1
+Authorization: Bearer {{token}}

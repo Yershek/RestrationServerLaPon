@@ -1,0 +1,38 @@
+@baseUrl = http://localhost:8080/api
+@token = YOUR_JWT_TOKEN_HERE
+
+# @name Create DataRequestsLog
+POST {{baseUrl}}/data-requests-log/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "requestingAgencyId": 1,
+  "citizenId": 1,
+  "dataFieldsRequested": "personalIdNumber, lastName",
+  "purposeCode": "CHECK_IDENTITY"
+}
+
+### @name Get All DataRequestsLogs
+GET {{baseUrl}}/data-requests-log/get-all
+Authorization: Bearer {{token}}
+
+### @name Get DataRequestsLog by ID
+GET {{baseUrl}}/data-requests-log/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update DataRequestsLog
+PUT {{baseUrl}}/data-requests-log/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "requestingAgencyId": 1,
+  "citizenId": 1,
+  "dataFieldsRequested": "personalIdNumber, firstName, lastName",
+  "purposeCode": "VERIFY_DATA"
+}
+
+### @name Delete DataRequestsLog
+DELETE {{baseUrl}}/data-requests-log/delete/1
+Authorization: Bearer {{token}}

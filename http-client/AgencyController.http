@@ -1,0 +1,34 @@
+@baseUrl = http://localhost:8080/api
+@token = YOUR_JWT_TOKEN_HERE
+
+# @name Create Agency
+POST {{baseUrl}}/agencies/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "МВД",
+  "shortCode": "MVD"
+}
+
+### @name Get All Agencies
+GET {{baseUrl}}/agencies/get-all
+Authorization: Bearer {{token}}
+
+### @name Get Agency by ID
+GET {{baseUrl}}/agencies/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update Agency
+PUT {{baseUrl}}/agencies/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Министерство Внутренних Дел",
+  "shortCode": "MVD"
+}
+
+### @name Delete Agency
+DELETE {{baseUrl}}/agencies/delete/1
+Authorization: Bearer {{token}}

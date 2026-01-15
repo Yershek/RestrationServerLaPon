@@ -1,0 +1,41 @@
+@baseUrl = http://localhost:8080/api
+@token = token
+
+# @name Create Address
+POST {{baseUrl}}/addresses/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "cityGeoId": 2,
+  "street": "Советская",
+  "houseNumber": "123",
+  "apartmentNumber": "45",
+  "postalCode": "720000"
+}
+
+### @name Get All Addresses
+GET {{baseUrl}}/addresses/get-all
+Authorization: Bearer {{token}}
+
+### @name Get Address by ID
+GET {{baseUrl}}/addresses/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update Address
+PUT {{baseUrl}}/addresses/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "cityGeoId": 2,
+  "street": "Чуйский проспект",
+  "houseNumber": "123",
+  "apartmentNumber": "45",
+  "postalCode": "720000"
+}
+
+### @name Delete Address
+DELETE {{baseUrl}}/addresses/delete/1
+Authorization: Bearer {{token}}
+

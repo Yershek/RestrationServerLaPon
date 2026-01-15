@@ -1,0 +1,32 @@
+@baseUrl = http://localhost:8080/api
+@token = YOUR_JWT_TOKEN_HERE
+
+# @name Create MaritalStatus
+POST {{baseUrl}}/marital-status/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Single"
+}
+
+### @name Get All MaritalStatuses
+GET {{baseUrl}}/marital-status/get-all
+Authorization: Bearer {{token}}
+
+### @name Get MaritalStatus by ID
+GET {{baseUrl}}/marital-status/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update MaritalStatus
+PUT {{baseUrl}}/marital-status/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Married"
+}
+
+### @name Delete MaritalStatus
+DELETE {{baseUrl}}/marital-status/delete/1
+Authorization: Bearer {{token}}

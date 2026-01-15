@@ -1,0 +1,34 @@
+@baseUrl = http://localhost:8080/api
+@token = YOUR_JWT_TOKEN_HERE
+
+# @name Create DocumentType
+POST {{baseUrl}}/document-types/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nameRu": "Паспорт ID",
+  "description": "Идентификационная карта гражданина"
+}
+
+### @name Get All DocumentTypes
+GET {{baseUrl}}/document-types/get-all
+Authorization: Bearer {{token}}
+
+### @name Get DocumentType by ID
+GET {{baseUrl}}/document-types/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update DocumentType
+PUT {{baseUrl}}/document-types/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nameRu": "Паспорт Гражданина",
+  "description": "Основной документ, удостоверяющий личность"
+}
+
+### @name Delete DocumentType
+DELETE {{baseUrl}}/document-types/delete/1
+Authorization: Bearer {{token}}

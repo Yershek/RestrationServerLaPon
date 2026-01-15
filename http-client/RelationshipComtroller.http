@@ -1,0 +1,38 @@
+@baseUrl = http://localhost:8080/api
+@token = YOUR_JWT_TOKEN_HERE
+
+# @name Create Relationship
+POST {{baseUrl}}/relationships/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "citizenAId": 1,
+  "citizenBId": 3,
+  "relationshipType": "Child",
+  "isVerified": false
+}
+
+### @name Get All Relationships
+GET {{baseUrl}}/relationships/get-all
+Authorization: Bearer {{token}}
+
+### @name Get Relationship by ID
+GET {{baseUrl}}/relationships/get-by/1
+Authorization: Bearer {{token}}
+
+### @name Update Relationship
+PUT {{baseUrl}}/relationships/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "citizenAId": 1,
+  "citizenBId": 3,
+  "relationshipType": "Parent",
+  "isVerified": true
+}
+
+### @name Delete Relationship
+DELETE {{baseUrl}}/relationships/delete/1
+Authorization: Bearer {{token}}
