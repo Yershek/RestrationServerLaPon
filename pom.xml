@@ -10,7 +10,7 @@
     </parent>
     <groupId>kg.LaPonAndSweeZy</groupId>
     <artifactId>RegistrationLaPon</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>latest</version>
     <name>RegistrationLaPon</name>
     <description>RegistrationLaPon</description>
     <url/>
@@ -129,6 +129,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <image>
+                        <name>${project.artifactId}:${project.version}</name>
+                    </image>
+                </configuration>
             </plugin>
         </plugins>
     </build>
