@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>kg.LaPonAndSweeZy</groupId>
-    <artifactId>RegistrationLaPon</artifactId>
+    <artifactId>registrationLaPon</artifactId>
     <version>latest</version>
     <name>RegistrationLaPon</name>
     <description>RegistrationLaPon</description>
