@@ -109,15 +109,16 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <image>
+                        <builder>paketobuildpacks/builder-noble-java-tiny:latest</builder>
+                        <name>registrationlapon:latest</name>
+                    </image>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <image>
-                        <name>registrationlapon:latest</name>
-                    </image>
                 </configuration>
             </plugin>
         </plugins>
