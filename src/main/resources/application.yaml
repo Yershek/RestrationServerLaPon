@@ -36,6 +36,10 @@ logging:
     io:
       jsonwebtoken: DEBUG
 
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+
 springdoc:
   api-docs:
     path: /v3/api-docs
