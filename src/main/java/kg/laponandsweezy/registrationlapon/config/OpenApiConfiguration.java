@@ -1,5 +1,7 @@
 package kg.laponandsweezy.registrationlapon.config;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -14,7 +16,12 @@ public class OpenApiConfiguration {
     @Bean
     public OpenAPI customOpenAPI() {
         final String securitySchemeName = "bearerAuth";
+
         return new OpenAPI()
+                // Добавляем сервер напрямую в конфигурацию объекта
+                .addServersItem(new io.swagger.v3.oas.models.servers.Server()
+                        .url("/registrationlapon")
+                        .description("Основной сервер с префиксом"))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
                         .addSecuritySchemes(securitySchemeName,
@@ -23,7 +30,8 @@ public class OpenApiConfiguration {
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
                                         .bearerFormat("JWT")))
-                .info(new Info().title("RegistrationLaPon API")
+                .info(new Info()
+                        .title("RegistrationLaPon API")
                         .description("API documentation for the RegistrationLaPon project.")
                         .version("1.0"));
     }
