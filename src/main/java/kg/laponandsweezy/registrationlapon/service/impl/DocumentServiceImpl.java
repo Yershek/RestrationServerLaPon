@@ -5,6 +5,7 @@ import kg.laponandsweezy.registrationlapon.dto.response.DocumentResponse;
 import kg.laponandsweezy.registrationlapon.entity.Citizen;
 import kg.laponandsweezy.registrationlapon.entity.Document;
 import kg.laponandsweezy.registrationlapon.entity.DocumentType;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.DocumentMapper;
 import kg.laponandsweezy.registrationlapon.repository.CitizenRepository;
 import kg.laponandsweezy.registrationlapon.repository.DocumentRepository;
@@ -36,11 +37,11 @@ public class DocumentServiceImpl implements DocumentService {
     public DocumentResponse save(DocumentRequest request) {
         Document document = documentMapper.toEntity(request);
         Citizen citizen = citizenRepository.findById(request.getCitizenId())
-                .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + request.getCitizenId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + request.getCitizenId()));
         document.setCitizen(citizen);
 
         DocumentType documentType = documentTypeRepository.findById(request.getDocumentTypeId())
-                .orElseThrow(() -> new RuntimeException("DocumentType not found with id: " + request.getDocumentTypeId()));
+                .orElseThrow(() -> new ResourceNotFoundException("DocumentType not found with id: " + request.getDocumentTypeId()));
         document.setDocumentType(documentType);
 
         Document savedDocument = documentRepository.save(document);
@@ -50,7 +51,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public DocumentResponse findById(int id) {
         Document document = documentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Document not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Document not found with id: " + id));
         return documentMapper.toDto(document);
     }
 
@@ -64,13 +65,13 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public DocumentResponse update(int id, DocumentRequest request) {
         Document existingDocument = documentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Document not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Document not found with id: " + id));
         Citizen citizen = citizenRepository.findById(request.getCitizenId())
-                .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + request.getCitizenId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + request.getCitizenId()));
         existingDocument.setCitizen(citizen);
 
         DocumentType documentType = documentTypeRepository.findById(request.getDocumentTypeId())
-                .orElseThrow(() -> new RuntimeException("DocumentType not found with id: " + request.getDocumentTypeId()));
+                .orElseThrow(() -> new ResourceNotFoundException("DocumentType not found with id: " + request.getDocumentTypeId()));
         existingDocument.setDocumentType(documentType);
 
         existingDocument.setSeries(request.getSeries());
@@ -86,6 +87,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public void deleteById(int id) {
+        if (!documentRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Document not found with id: " + id);
+        }
         documentRepository.deleteById(id);
     }
 }

@@ -4,6 +4,7 @@ import kg.laponandsweezy.registrationlapon.dto.request.RelationshipRequest;
 import kg.laponandsweezy.registrationlapon.dto.response.RelationshipResponse;
 import kg.laponandsweezy.registrationlapon.entity.Citizen;
 import kg.laponandsweezy.registrationlapon.entity.Relationship;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.RelationshipMapper;
 import kg.laponandsweezy.registrationlapon.repository.CitizenRepository;
 import kg.laponandsweezy.registrationlapon.repository.RelationshipRepository;
@@ -31,11 +32,11 @@ public class RelationshipServiceImpl implements RelationshipService {
     public RelationshipResponse save(RelationshipRequest request) {
         Relationship relationship = relationshipMapper.toEntity(request);
         Citizen citizenA = citizenRepository.findById(request.getCitizenAId())
-                .orElseThrow(() -> new RuntimeException("Citizen A not found with id: " + request.getCitizenAId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen A not found with id: " + request.getCitizenAId()));
         relationship.setCitizenA(citizenA);
 
         Citizen citizenB = citizenRepository.findById(request.getCitizenBId())
-                .orElseThrow(() -> new RuntimeException("Citizen B not found with id: " + request.getCitizenBId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen B not found with id: " + request.getCitizenBId()));
         relationship.setCitizenB(citizenB);
 
         Relationship savedRelationship = relationshipRepository.save(relationship);
@@ -45,7 +46,7 @@ public class RelationshipServiceImpl implements RelationshipService {
     @Override
     public RelationshipResponse findById(int id) {
         Relationship relationship = relationshipRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Relationship not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Relationship not found with id: " + id));
         return relationshipMapper.toDto(relationship);
     }
 
@@ -59,13 +60,13 @@ public class RelationshipServiceImpl implements RelationshipService {
     @Override
     public RelationshipResponse update(int id, RelationshipRequest request) {
         Relationship existingRelationship = relationshipRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Relationship not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Relationship not found with id: " + id));
         Citizen citizenA = citizenRepository.findById(request.getCitizenAId())
-                .orElseThrow(() -> new RuntimeException("Citizen A not found with id: " + request.getCitizenAId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen A not found with id: " + request.getCitizenAId()));
         existingRelationship.setCitizenA(citizenA);
 
         Citizen citizenB = citizenRepository.findById(request.getCitizenBId())
-                .orElseThrow(() -> new RuntimeException("Citizen B not found with id: " + request.getCitizenBId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen B not found with id: " + request.getCitizenBId()));
         existingRelationship.setCitizenB(citizenB);
 
         existingRelationship.setRelationshipType(request.getRelationshipType());
@@ -77,6 +78,9 @@ public class RelationshipServiceImpl implements RelationshipService {
 
     @Override
     public void deleteById(int id) {
+        if (!relationshipRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Relationship not found with id: " + id);
+        }
         relationshipRepository.deleteById(id);
     }
 }

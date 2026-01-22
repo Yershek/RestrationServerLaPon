@@ -3,6 +3,7 @@ package kg.laponandsweezy.registrationlapon.service.impl;
 import kg.laponandsweezy.registrationlapon.dto.request.AgencyRequest;
 import kg.laponandsweezy.registrationlapon.dto.response.AgencyResponse;
 import kg.laponandsweezy.registrationlapon.entity.Agency;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.AgencyMapper;
 import kg.laponandsweezy.registrationlapon.repository.AgencyRepository;
 import kg.laponandsweezy.registrationlapon.service.AgencyService;
@@ -31,7 +32,7 @@ public class AgencyServiceImpl implements AgencyService {
     @Override
     public AgencyResponse findById(int id) {
         Agency agency = agencyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Agency not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Agency not found with id: " + id));
         return agencyMapper.toDto(agency);
     }
 
@@ -45,7 +46,7 @@ public class AgencyServiceImpl implements AgencyService {
     @Override
     public AgencyResponse update(int id, AgencyRequest request) {
         Agency existingAgency = agencyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Agency not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Agency not found with id: " + id));
 
         existingAgency.setName(request.getName());
         existingAgency.setShortCode(request.getShortCode());
@@ -56,6 +57,9 @@ public class AgencyServiceImpl implements AgencyService {
 
     @Override
     public void deleteById(int id) {
+        if (!agencyRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Agency not found with id: " + id);
+        }
         agencyRepository.deleteById(id);
     }
 }

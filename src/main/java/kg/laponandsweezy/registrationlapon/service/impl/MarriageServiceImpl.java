@@ -5,6 +5,7 @@ import kg.laponandsweezy.registrationlapon.dto.response.MarriageResponse;
 import kg.laponandsweezy.registrationlapon.entity.Citizen;
 import kg.laponandsweezy.registrationlapon.entity.MaritalStatus;
 import kg.laponandsweezy.registrationlapon.entity.Marriage;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.MarriageMapper;
 import kg.laponandsweezy.registrationlapon.repository.CitizenRepository;
 import kg.laponandsweezy.registrationlapon.repository.MaritalStatusRepository;
@@ -36,15 +37,15 @@ public class MarriageServiceImpl implements MarriageService {
     public MarriageResponse save(MarriageRequest request) {
         Marriage marriage = marriageMapper.toEntity(request);
         Citizen husband = citizenRepository.findById(request.getHusbandId())
-                .orElseThrow(() -> new RuntimeException("Husband not found with id: " + request.getHusbandId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Husband not found with id: " + request.getHusbandId()));
         marriage.setHusband(husband);
 
         Citizen wife = citizenRepository.findById(request.getWifeId())
-                .orElseThrow(() -> new RuntimeException("Wife not found with id: " + request.getWifeId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Wife not found with id: " + request.getWifeId()));
         marriage.setWife(wife);
 
         MaritalStatus maritalStatus = maritalStatusRepository.findById(request.getMaritalStatusId())
-                .orElseThrow(() -> new RuntimeException("MaritalStatus not found with id: " + request.getMaritalStatusId()));
+                .orElseThrow(() -> new ResourceNotFoundException("MaritalStatus not found with id: " + request.getMaritalStatusId()));
         marriage.setMaritalStatus(maritalStatus);
 
         Marriage savedMarriage = marriageRepository.save(marriage);
@@ -54,7 +55,7 @@ public class MarriageServiceImpl implements MarriageService {
     @Override
     public MarriageResponse findById(int id) {
         Marriage marriage = marriageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Marriage not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Marriage not found with id: " + id));
         return marriageMapper.toDto(marriage);
     }
 
@@ -68,17 +69,17 @@ public class MarriageServiceImpl implements MarriageService {
     @Override
     public MarriageResponse update(int id, MarriageRequest request) {
         Marriage existingMarriage = marriageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Marriage not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Marriage not found with id: " + id));
         Citizen husband = citizenRepository.findById(request.getHusbandId())
-                .orElseThrow(() -> new RuntimeException("Husband not found with id: " + request.getHusbandId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Husband not found with id: " + request.getHusbandId()));
         existingMarriage.setHusband(husband);
 
         Citizen wife = citizenRepository.findById(request.getWifeId())
-                .orElseThrow(() -> new RuntimeException("Wife not found with id: " + request.getWifeId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Wife not found with id: " + request.getWifeId()));
         existingMarriage.setWife(wife);
 
         MaritalStatus maritalStatus = maritalStatusRepository.findById(request.getMaritalStatusId())
-                .orElseThrow(() -> new RuntimeException("MaritalStatus not found with id: " + request.getMaritalStatusId()));
+                .orElseThrow(() -> new ResourceNotFoundException("MaritalStatus not found with id: " + request.getMaritalStatusId()));
         existingMarriage.setMaritalStatus(maritalStatus);
 
         existingMarriage.setMarriageDate(request.getMarriageDate());
@@ -93,6 +94,9 @@ public class MarriageServiceImpl implements MarriageService {
 
     @Override
     public void deleteById(int id) {
+        if (!marriageRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Marriage not found with id: " + id);
+        }
         marriageRepository.deleteById(id);
     }
 }

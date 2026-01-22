@@ -4,6 +4,7 @@ import kg.laponandsweezy.registrationlapon.dto.request.CitizenContactRequest;
 import kg.laponandsweezy.registrationlapon.dto.response.CitizenContactResponse;
 import kg.laponandsweezy.registrationlapon.entity.Citizen;
 import kg.laponandsweezy.registrationlapon.entity.CitizenContact;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.CitizenContactMapper;
 import kg.laponandsweezy.registrationlapon.repository.CitizenContactRepository;
 import kg.laponandsweezy.registrationlapon.repository.CitizenRepository;
@@ -31,7 +32,7 @@ public class CitizenContactServiceImpl implements CitizenContactService {
     public CitizenContactResponse save(CitizenContactRequest request) {
         CitizenContact citizenContact = citizenContactMapper.toEntity(request);
         Citizen citizen = citizenRepository.findById(request.getCitizenId())
-                .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + request.getCitizenId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + request.getCitizenId()));
         citizenContact.setCitizen(citizen);
 
         CitizenContact savedContact = citizenContactRepository.save(citizenContact);
@@ -41,7 +42,7 @@ public class CitizenContactServiceImpl implements CitizenContactService {
     @Override
     public CitizenContactResponse findById(int id) {
         CitizenContact citizenContact = citizenContactRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CitizenContact not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("CitizenContact not found with id: " + id));
         return citizenContactMapper.toDto(citizenContact);
     }
 
@@ -55,9 +56,9 @@ public class CitizenContactServiceImpl implements CitizenContactService {
     @Override
     public CitizenContactResponse update(int id, CitizenContactRequest request) {
         CitizenContact existingContact = citizenContactRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CitizenContact not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("CitizenContact not found with id: " + id));
         Citizen citizen = citizenRepository.findById(request.getCitizenId())
-                .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + request.getCitizenId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + request.getCitizenId()));
         existingContact.setCitizen(citizen);
 
         existingContact.setContactType(request.getContactType());
@@ -70,6 +71,9 @@ public class CitizenContactServiceImpl implements CitizenContactService {
 
     @Override
     public void deleteById(int id) {
+        if (!citizenContactRepository.existsById(id)) {
+            throw new ResourceNotFoundException("CitizenContact not found with id: " + id);
+        }
         citizenContactRepository.deleteById(id);
     }
 }

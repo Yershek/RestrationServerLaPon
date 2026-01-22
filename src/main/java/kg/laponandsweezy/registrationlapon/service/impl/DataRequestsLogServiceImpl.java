@@ -5,6 +5,7 @@ import kg.laponandsweezy.registrationlapon.dto.response.DataRequestsLogResponse;
 import kg.laponandsweezy.registrationlapon.entity.Agency;
 import kg.laponandsweezy.registrationlapon.entity.Citizen;
 import kg.laponandsweezy.registrationlapon.entity.DataRequestsLog;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.DataRequestsLogMapper;
 import kg.laponandsweezy.registrationlapon.repository.AgencyRepository;
 import kg.laponandsweezy.registrationlapon.repository.CitizenRepository;
@@ -36,12 +37,12 @@ public class DataRequestsLogServiceImpl implements DataRequestsLogService {
     public DataRequestsLogResponse save(DataRequestsLogRequest request) {
         DataRequestsLog dataRequestsLog = dataRequestsLogMapper.toEntity(request);
         Agency requestingAgency = agencyRepository.findById(request.getRequestingAgencyId())
-                .orElseThrow(() -> new RuntimeException("Agency not found with id: " + request.getRequestingAgencyId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Agency not found with id: " + request.getRequestingAgencyId()));
         dataRequestsLog.setRequestingAgency(requestingAgency);
 
         if (request.getCitizenId() != 0) {
             Citizen citizen = citizenRepository.findById(request.getCitizenId())
-                    .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + request.getCitizenId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + request.getCitizenId()));
             dataRequestsLog.setCitizen(citizen);
         }
 
@@ -52,7 +53,7 @@ public class DataRequestsLogServiceImpl implements DataRequestsLogService {
     @Override
     public DataRequestsLogResponse findById(Long id) {
         DataRequestsLog dataRequestsLog = dataRequestsLogRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DataRequestsLog not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("DataRequestsLog not found with id: " + id));
         return dataRequestsLogMapper.toDto(dataRequestsLog);
     }
 
@@ -66,14 +67,14 @@ public class DataRequestsLogServiceImpl implements DataRequestsLogService {
     @Override
     public DataRequestsLogResponse update(Long id, DataRequestsLogRequest request) {
         DataRequestsLog existingLog = dataRequestsLogRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DataRequestsLog not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("DataRequestsLog not found with id: " + id));
         Agency requestingAgency = agencyRepository.findById(request.getRequestingAgencyId())
-                .orElseThrow(() -> new RuntimeException("Agency not found with id: " + request.getRequestingAgencyId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Agency not found with id: " + request.getRequestingAgencyId()));
         existingLog.setRequestingAgency(requestingAgency);
 
         if (request.getCitizenId() != 0) {
             Citizen citizen = citizenRepository.findById(request.getCitizenId())
-                    .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + request.getCitizenId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + request.getCitizenId()));
             existingLog.setCitizen(citizen);
         } else {
             existingLog.setCitizen(null);
@@ -88,6 +89,9 @@ public class DataRequestsLogServiceImpl implements DataRequestsLogService {
 
     @Override
     public void deleteById(Long id) {
+        if (!dataRequestsLogRepository.existsById(id)) {
+            throw new ResourceNotFoundException("DataRequestsLog not found with id: " + id);
+        }
         dataRequestsLogRepository.deleteById(id);
     }
 }

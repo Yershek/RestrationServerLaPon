@@ -3,6 +3,7 @@ package kg.laponandsweezy.registrationlapon.service.impl;
 import kg.laponandsweezy.registrationlapon.dto.request.MaritalStatusRequest;
 import kg.laponandsweezy.registrationlapon.dto.response.MaritalStatusResponse;
 import kg.laponandsweezy.registrationlapon.entity.MaritalStatus;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.MaritalStatusMapper;
 import kg.laponandsweezy.registrationlapon.repository.MaritalStatusRepository;
 import kg.laponandsweezy.registrationlapon.service.MaritalStatusService;
@@ -31,7 +32,7 @@ public class MaritalStatusServiceImpl implements MaritalStatusService {
     @Override
     public MaritalStatusResponse findById(int id) {
         MaritalStatus maritalStatus = maritalStatusRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("MaritalStatus not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("MaritalStatus not found with id: " + id));
         return maritalStatusMapper.toDto(maritalStatus);
     }
 
@@ -45,7 +46,7 @@ public class MaritalStatusServiceImpl implements MaritalStatusService {
     @Override
     public MaritalStatusResponse update(int id, MaritalStatusRequest request) {
         MaritalStatus existingMaritalStatus = maritalStatusRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("MaritalStatus not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("MaritalStatus not found with id: " + id));
 
         existingMaritalStatus.setName(request.getName());
 
@@ -55,6 +56,9 @@ public class MaritalStatusServiceImpl implements MaritalStatusService {
 
     @Override
     public void deleteById(int id) {
+        if (!maritalStatusRepository.existsById(id)) {
+            throw new ResourceNotFoundException("MaritalStatus not found with id: " + id);
+        }
         maritalStatusRepository.deleteById(id);
     }
 }

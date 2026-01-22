@@ -4,6 +4,7 @@ import kg.laponandsweezy.registrationlapon.dto.request.CitizenStatusRequest;
 import kg.laponandsweezy.registrationlapon.dto.response.CitizenStatusResponse;
 import kg.laponandsweezy.registrationlapon.entity.Citizen;
 import kg.laponandsweezy.registrationlapon.entity.CitizenStatus;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.CitizenStatusMapper;
 import kg.laponandsweezy.registrationlapon.repository.CitizenRepository;
 import kg.laponandsweezy.registrationlapon.repository.CitizenStatusRepository;
@@ -31,7 +32,7 @@ public class CitizenStatusServiceImpl implements CitizenStatusService {
     public CitizenStatusResponse save(CitizenStatusRequest request) {
         CitizenStatus citizenStatus = citizenStatusMapper.toEntity(request);
         Citizen citizen = citizenRepository.findById(request.getCitizenId())
-                .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + request.getCitizenId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + request.getCitizenId()));
         citizenStatus.setCitizen(citizen);
 
         CitizenStatus savedStatus = citizenStatusRepository.save(citizenStatus);
@@ -41,7 +42,7 @@ public class CitizenStatusServiceImpl implements CitizenStatusService {
     @Override
     public CitizenStatusResponse findById(int id) {
         CitizenStatus citizenStatus = citizenStatusRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CitizenStatus not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("CitizenStatus not found with id: " + id));
         return citizenStatusMapper.toDto(citizenStatus);
     }
 
@@ -55,9 +56,9 @@ public class CitizenStatusServiceImpl implements CitizenStatusService {
     @Override
     public CitizenStatusResponse update(int id, CitizenStatusRequest request) {
         CitizenStatus existingStatus = citizenStatusRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CitizenStatus not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("CitizenStatus not found with id: " + id));
         Citizen citizen = citizenRepository.findById(request.getCitizenId())
-                .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + request.getCitizenId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + request.getCitizenId()));
         existingStatus.setCitizen(citizen);
 
         existingStatus.setStatusType(request.getStatusType());
@@ -70,6 +71,9 @@ public class CitizenStatusServiceImpl implements CitizenStatusService {
 
     @Override
     public void deleteById(int id) {
+        if (!citizenStatusRepository.existsById(id)) {
+            throw new ResourceNotFoundException("CitizenStatus not found with id: " + id);
+        }
         citizenStatusRepository.deleteById(id);
     }
 }

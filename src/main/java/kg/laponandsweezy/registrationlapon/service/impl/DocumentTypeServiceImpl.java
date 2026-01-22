@@ -3,6 +3,7 @@ package kg.laponandsweezy.registrationlapon.service.impl;
 import kg.laponandsweezy.registrationlapon.dto.request.DocumentTypeRequest;
 import kg.laponandsweezy.registrationlapon.dto.response.DocumentTypeResponse;
 import kg.laponandsweezy.registrationlapon.entity.DocumentType;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.DocumentTypeMapper;
 import kg.laponandsweezy.registrationlapon.repository.DocumentTypeRepository;
 import kg.laponandsweezy.registrationlapon.service.DocumentTypeService;
@@ -31,7 +32,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     @Override
     public DocumentTypeResponse findById(int id) {
         DocumentType documentType = documentTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DocumentType not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("DocumentType not found with id: " + id));
         return documentTypeMapper.toDto(documentType);
     }
 
@@ -45,7 +46,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     @Override
     public DocumentTypeResponse update(int id, DocumentTypeRequest request) {
         DocumentType existingDocumentType = documentTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DocumentType not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("DocumentType not found with id: " + id));
 
         existingDocumentType.setNameRu(request.getNameRu());
         existingDocumentType.setDescription(request.getDescription());
@@ -56,6 +57,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Override
     public void deleteById(int id) {
+        if (!documentTypeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("DocumentType not found with id: " + id);
+        }
         documentTypeRepository.deleteById(id);
     }
 }

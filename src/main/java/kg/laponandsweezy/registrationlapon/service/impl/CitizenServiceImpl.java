@@ -4,11 +4,13 @@ import kg.laponandsweezy.registrationlapon.dto.request.CitizenRequest;
 import kg.laponandsweezy.registrationlapon.dto.response.CitizenResponse;
 import kg.laponandsweezy.registrationlapon.entity.Citizen;
 import kg.laponandsweezy.registrationlapon.exception.CitizenNotFoundException;
+import kg.laponandsweezy.registrationlapon.exception.DuplicateRecordException;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.CitizenMapper;
 import kg.laponandsweezy.registrationlapon.repository.CitizenRepository;
 import kg.laponandsweezy.registrationlapon.security.UserDetailsImpl;
 import kg.laponandsweezy.registrationlapon.service.CitizenService;
-import org.springframework.context.annotation.Lazy; // Импортируем @Lazy
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +25,6 @@ public class CitizenServiceImpl implements CitizenService {
     private final CitizenMapper citizenMapper;
     private final PasswordEncoder passwordEncoder;
 
-    // Добавляем @Lazy к PasswordEncoder
     public CitizenServiceImpl(CitizenRepository citizenRepository, CitizenMapper citizenMapper, @Lazy PasswordEncoder passwordEncoder) {
         this.citizenRepository = citizenRepository;
         this.citizenMapper = citizenMapper;
@@ -32,6 +33,9 @@ public class CitizenServiceImpl implements CitizenService {
 
     @Override
     public CitizenResponse save(CitizenRequest request) {
+        if (citizenRepository.findCitizenByPersonalIdNumber(request.getPersonalIdNumber()).isPresent()) {
+            throw new DuplicateRecordException("Citizen with PIN " + request.getPersonalIdNumber() + " already exists");
+        }
         Citizen citizen = citizenMapper.toEntity(request);
         citizen.setPassword(passwordEncoder.encode(request.getPassword()));
         Citizen savedCitizen = citizenRepository.save(citizen);
@@ -41,7 +45,7 @@ public class CitizenServiceImpl implements CitizenService {
     @Override
     public CitizenResponse findById(int id) {
         Citizen citizen = citizenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + id));
         return citizenMapper.toDto(citizen);
     }
 
@@ -55,7 +59,14 @@ public class CitizenServiceImpl implements CitizenService {
     @Override
     public CitizenResponse update(int id, CitizenRequest request) {
         Citizen existingCitizen = citizenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + id));
+        
+        // Check if PIN is being changed to one that already exists
+        if (!existingCitizen.getPersonalIdNumber().equals(request.getPersonalIdNumber()) &&
+            citizenRepository.findCitizenByPersonalIdNumber(request.getPersonalIdNumber()).isPresent()) {
+             throw new DuplicateRecordException("Citizen with PIN " + request.getPersonalIdNumber() + " already exists");
+        }
+
         existingCitizen.setPersonalIdNumber(request.getPersonalIdNumber());
         existingCitizen.setLastName(request.getLastName());
         existingCitizen.setFirstName(request.getFirstName());
@@ -74,6 +85,9 @@ public class CitizenServiceImpl implements CitizenService {
 
     @Override
     public void deleteById(int id) {
+        if (!citizenRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Citizen not found with id: " + id);
+        }
         citizenRepository.deleteById(id);
     }
 

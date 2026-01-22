@@ -5,6 +5,7 @@ import kg.laponandsweezy.registrationlapon.dto.response.DocumentChangesLogRespon
 import kg.laponandsweezy.registrationlapon.entity.Agency;
 import kg.laponandsweezy.registrationlapon.entity.Document;
 import kg.laponandsweezy.registrationlapon.entity.DocumentChangesLog;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.DocumentChangesLogMapper;
 import kg.laponandsweezy.registrationlapon.repository.AgencyRepository;
 import kg.laponandsweezy.registrationlapon.repository.DocumentChangesLogRepository;
@@ -36,12 +37,12 @@ public class DocumentChangesLogServiceImpl implements DocumentChangesLogService 
     public DocumentChangesLogResponse save(DocumentChangesLogRequest request) {
         DocumentChangesLog documentChangesLog = documentChangesLogMapper.toEntity(request);
         Document document = documentRepository.findById(request.getDocumentId())
-                .orElseThrow(() -> new RuntimeException("Document not found with id: " + request.getDocumentId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Document not found with id: " + request.getDocumentId()));
         documentChangesLog.setDocument(document);
 
         if (request.getAgencyId() != 0) { // Assuming 0 means no agency associated
             Agency agency = agencyRepository.findById(request.getAgencyId())
-                    .orElseThrow(() -> new RuntimeException("Agency not found with id: " + request.getAgencyId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Agency not found with id: " + request.getAgencyId()));
             documentChangesLog.setAgency(agency);
         }
 
@@ -52,7 +53,7 @@ public class DocumentChangesLogServiceImpl implements DocumentChangesLogService 
     @Override
     public DocumentChangesLogResponse findById(Long id) {
         DocumentChangesLog documentChangesLog = documentChangesLogRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DocumentChangesLog not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("DocumentChangesLog not found with id: " + id));
         return documentChangesLogMapper.toDto(documentChangesLog);
     }
 
@@ -66,14 +67,14 @@ public class DocumentChangesLogServiceImpl implements DocumentChangesLogService 
     @Override
     public DocumentChangesLogResponse update(Long id, DocumentChangesLogRequest request) {
         DocumentChangesLog existingLog = documentChangesLogRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DocumentChangesLog not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("DocumentChangesLog not found with id: " + id));
         Document document = documentRepository.findById(request.getDocumentId())
-                .orElseThrow(() -> new RuntimeException("Document not found with id: " + request.getDocumentId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Document not found with id: " + request.getDocumentId()));
         existingLog.setDocument(document);
 
         if (request.getAgencyId() != 0) {
             Agency agency = agencyRepository.findById(request.getAgencyId())
-                    .orElseThrow(() -> new RuntimeException("Agency not found with id: " + request.getAgencyId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Agency not found with id: " + request.getAgencyId()));
             existingLog.setAgency(agency);
         } else {
             existingLog.setAgency(null);
@@ -88,6 +89,9 @@ public class DocumentChangesLogServiceImpl implements DocumentChangesLogService 
 
     @Override
     public void deleteById(Long id) {
+        if (!documentChangesLogRepository.existsById(id)) {
+            throw new ResourceNotFoundException("DocumentChangesLog not found with id: " + id);
+        }
         documentChangesLogRepository.deleteById(id);
     }
 }

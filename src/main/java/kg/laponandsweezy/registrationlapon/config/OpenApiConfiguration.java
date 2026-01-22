@@ -18,7 +18,6 @@ public class OpenApiConfiguration {
         final String securitySchemeName = "bearerAuth";
 
         return new OpenAPI()
-                // Добавляем сервер напрямую в конфигурацию объекта
                 .addServersItem(new io.swagger.v3.oas.models.servers.Server()
                         .url("/registrationlapon")
                         .description("Основной сервер с префиксом"))

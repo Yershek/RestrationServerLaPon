@@ -4,6 +4,7 @@ import kg.laponandsweezy.registrationlapon.dto.request.AddressRequest;
 import kg.laponandsweezy.registrationlapon.dto.response.AddressResponse;
 import kg.laponandsweezy.registrationlapon.entity.Address;
 import kg.laponandsweezy.registrationlapon.entity.GeographicHierarchy;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.AddressMapper;
 import kg.laponandsweezy.registrationlapon.repository.AddressRepository;
 import kg.laponandsweezy.registrationlapon.repository.GeographicHierarchyRepository;
@@ -31,7 +32,7 @@ public class AddressServiceImpl implements AddressService {
     public AddressResponse save(AddressRequest request) {
         Address address = addressMapper.toEntity(request);
         GeographicHierarchy cityGeo = geographicHierarchyRepository.findById(request.getCityGeoId())
-                .orElseThrow(() -> new RuntimeException("City GeographicHierarchy not found with id: " + request.getCityGeoId()));
+                .orElseThrow(() -> new ResourceNotFoundException("City GeographicHierarchy not found with id: " + request.getCityGeoId()));
         address.setCityGeo(cityGeo);
 
         Address savedAddress = addressRepository.save(address);
@@ -41,7 +42,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public AddressResponse findById(int id) {
         Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found with id: " + id));
         return addressMapper.toDto(address);
     }
 
@@ -55,9 +56,9 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public AddressResponse update(int id, AddressRequest request) {
         Address existingAddress = addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found with id: " + id));
         GeographicHierarchy cityGeo = geographicHierarchyRepository.findById(request.getCityGeoId())
-                .orElseThrow(() -> new RuntimeException("City GeographicHierarchy not found with id: " + request.getCityGeoId()));
+                .orElseThrow(() -> new ResourceNotFoundException("City GeographicHierarchy not found with id: " + request.getCityGeoId()));
         existingAddress.setCityGeo(cityGeo);
 
         existingAddress.setStreet(request.getStreet());
@@ -71,6 +72,9 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public void deleteById(int id) {
+        if (!addressRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Address not found with id: " + id);
+        }
         addressRepository.deleteById(id);
     }
 }

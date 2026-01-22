@@ -3,6 +3,7 @@ package kg.laponandsweezy.registrationlapon.service.impl;
 import kg.laponandsweezy.registrationlapon.dto.request.GeographicHierarchyRequest;
 import kg.laponandsweezy.registrationlapon.dto.response.GeographicHierarchyResponse;
 import kg.laponandsweezy.registrationlapon.entity.GeographicHierarchy;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.GeographicHierarchyMapper;
 import kg.laponandsweezy.registrationlapon.repository.GeographicHierarchyRepository;
 import kg.laponandsweezy.registrationlapon.service.GeographicHierarchyService;
@@ -27,7 +28,7 @@ public class GeographicHierarchyServiceImpl implements GeographicHierarchyServic
         GeographicHierarchy geographicHierarchy = geographicHierarchyMapper.toEntity(request);
         if (request.getParentId() != null && request.getParentId() != 0) {
             GeographicHierarchy parent = geographicHierarchyRepository.findById(request.getParentId())
-                    .orElseThrow(() -> new RuntimeException("Parent GeographicHierarchy not found with id: " + request.getParentId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent GeographicHierarchy not found with id: " + request.getParentId()));
             geographicHierarchy.setParent(parent);
         }
 
@@ -38,7 +39,7 @@ public class GeographicHierarchyServiceImpl implements GeographicHierarchyServic
     @Override
     public GeographicHierarchyResponse findById(int id) {
         GeographicHierarchy geographicHierarchy = geographicHierarchyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("GeographicHierarchy not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("GeographicHierarchy not found with id: " + id));
         return geographicHierarchyMapper.toDto(geographicHierarchy);
     }
 
@@ -52,10 +53,10 @@ public class GeographicHierarchyServiceImpl implements GeographicHierarchyServic
     @Override
     public GeographicHierarchyResponse update(int id, GeographicHierarchyRequest request) {
         GeographicHierarchy existingHierarchy = geographicHierarchyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("GeographicHierarchy not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("GeographicHierarchy not found with id: " + id));
         if (request.getParentId() != null && request.getParentId() != 0) {
             GeographicHierarchy parent = geographicHierarchyRepository.findById(request.getParentId())
-                    .orElseThrow(() -> new RuntimeException("Parent GeographicHierarchy not found with id: " + request.getParentId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent GeographicHierarchy not found with id: " + request.getParentId()));
             existingHierarchy.setParent(parent);
         } else {
             existingHierarchy.setParent(null);
@@ -70,6 +71,9 @@ public class GeographicHierarchyServiceImpl implements GeographicHierarchyServic
 
     @Override
     public void deleteById(int id) {
+        if (!geographicHierarchyRepository.existsById(id)) {
+            throw new ResourceNotFoundException("GeographicHierarchy not found with id: " + id);
+        }
         geographicHierarchyRepository.deleteById(id);
     }
 }

@@ -5,6 +5,7 @@ import kg.laponandsweezy.registrationlapon.dto.response.CitizenResidencyResponse
 import kg.laponandsweezy.registrationlapon.entity.Address;
 import kg.laponandsweezy.registrationlapon.entity.Citizen;
 import kg.laponandsweezy.registrationlapon.entity.CitizenResidency;
+import kg.laponandsweezy.registrationlapon.exception.ResourceNotFoundException;
 import kg.laponandsweezy.registrationlapon.mapper.CitizenResidencyMapper;
 import kg.laponandsweezy.registrationlapon.repository.AddressRepository;
 import kg.laponandsweezy.registrationlapon.repository.CitizenRepository;
@@ -36,11 +37,11 @@ public class CitizenResidencyServiceImpl implements CitizenResidencyService {
     public CitizenResidencyResponse save(CitizenResidencyRequest request) {
         CitizenResidency citizenResidency = citizenResidencyMapper.toEntity(request);
         Citizen citizen = citizenRepository.findById(request.getCitizenId())
-                .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + request.getCitizenId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + request.getCitizenId()));
         citizenResidency.setCitizen(citizen);
 
         Address address = addressRepository.findById(request.getAddressId())
-                .orElseThrow(() -> new RuntimeException("Address not found with id: " + request.getAddressId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found with id: " + request.getAddressId()));
         citizenResidency.setAddress(address);
 
         CitizenResidency savedResidency = citizenResidencyRepository.save(citizenResidency);
@@ -50,7 +51,7 @@ public class CitizenResidencyServiceImpl implements CitizenResidencyService {
     @Override
     public CitizenResidencyResponse findById(int id) {
         CitizenResidency citizenResidency = citizenResidencyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CitizenResidency not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("CitizenResidency not found with id: " + id));
         return citizenResidencyMapper.toDto(citizenResidency);
     }
 
@@ -64,13 +65,13 @@ public class CitizenResidencyServiceImpl implements CitizenResidencyService {
     @Override
     public CitizenResidencyResponse update(int id, CitizenResidencyRequest request) {
         CitizenResidency existingResidency = citizenResidencyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CitizenResidency not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("CitizenResidency not found with id: " + id));
         Citizen citizen = citizenRepository.findById(request.getCitizenId())
-                .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + request.getCitizenId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen not found with id: " + request.getCitizenId()));
         existingResidency.setCitizen(citizen);
 
         Address address = addressRepository.findById(request.getAddressId())
-                .orElseThrow(() -> new RuntimeException("Address not found with id: " + request.getAddressId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found with id: " + request.getAddressId()));
         existingResidency.setAddress(address);
 
         existingResidency.setAddressType(request.getAddressType());
@@ -83,6 +84,9 @@ public class CitizenResidencyServiceImpl implements CitizenResidencyService {
 
     @Override
     public void deleteById(int id) {
+        if (!citizenResidencyRepository.existsById(id)) {
+            throw new ResourceNotFoundException("CitizenResidency not found with id: " + id);
+        }
         citizenResidencyRepository.deleteById(id);
     }
 }
