@@ -1,6 +1,5 @@
 package kg.laponandsweezy.registrationlapon.config;
 
-//TODO: Создать Лавсчик ошибок
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;

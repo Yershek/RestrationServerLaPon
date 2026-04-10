@@ -24,7 +24,6 @@ public class CitizenContactMapperImpl implements CitizenContactMapper {
             return null;
         }
         CitizenContact citizenContact = new CitizenContact();
-        citizenContact.setCitizen(citizenRepository.findById(request.getCitizenId()).orElse(null));
         citizenContact.setContactType(request.getContactType());
         citizenContact.setContactValue(request.getContactValue());
         citizenContact.setPrimary(request.isPrimary());

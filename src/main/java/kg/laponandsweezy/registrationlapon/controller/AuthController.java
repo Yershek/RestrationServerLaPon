@@ -33,16 +33,14 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Login user", description = "Authenticates a user and returns a JWT token")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public String login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getPersonalIdNumber(),
                         loginRequest.getPassword()
                 )
         );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtCore.jwtGenerator((UserDetails) authentication.getPrincipal());
-        return ResponseEntity.ok(new LoginResponse(jwt));
+        return jwt;
     }
 }

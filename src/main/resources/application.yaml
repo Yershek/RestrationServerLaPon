@@ -3,12 +3,12 @@ spring:
     name: registrationlapon
   config:
     import: "optional:configserver:http://config-server:8888"
-#  cloud:
-#    config:
-#      enabled: false
+  cloud:
+    config:
+      enabled: false
 
   datasource:
-    url: jdbc:postgresql://postgres_15:5432/registration_data_base
+    url: jdbc:postgresql://localhost:5433/registration_data_base
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -16,20 +16,20 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
 
 server:
-  port: 8080
+  port: 8081
 
 jwt:
   secret:
     key: c2VjcmV0X2tleV9mb3Jfand0X2FwcGxpY2F0aW9uX2V4YW1wbGU=
   token:
-    time: 60000
+    time: 600000
 
 logging:
   level:
@@ -39,11 +39,11 @@ logging:
     io:
       jsonwebtoken: DEBUG
 
-#eureka:
-#  client:
-#    enabled: false
-#    register-with-eureka: false
-#    fetch-registry: false
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
 
 springdoc:
   api-docs:

@@ -2,6 +2,6 @@ POST localhost:8080/api/security/login
 Content-Type: application/json
 
 {
- "personalIdNumber": "12345678912345",
- "password": "Aziret0602"
+ "personalIdNumber": "123",
+ "password": "123"
 }
